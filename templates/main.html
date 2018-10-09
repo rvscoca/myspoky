@@ -1,0 +1,139 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/plugin/codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="/static/plugin/codemirror/theme/dracula.css">
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+    <body>
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Spoky API</h1>
+                <p class="lead">Create your own Spoky API !</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-8">
+                    <textarea class="codemirror-textarea">from flask import Flask 
+from flask_restplus import Resource, Api, Namespace, fields 
+from urllib.parse import urlparse
+    
+# Initialize Flask
+app = Flask(__name__)
+api = Api(app, 	title='Spoky API', 
+                description='Simple API to control Spoky IOT devices', 
+                default="Spoky", 
+                default_label="Spoky related operations")
+spoky = Namespace('Spoky', path="/spoky")
+api.add_namespace(spoky)</textarea>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary commit">Git commit</button>
+                    <button type="button" class="btn btn-primary push">Git push</button>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-8">
+                    <div class="api-response"></div>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary call-api">Test API</button>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="/static/js/main.js"></script>
+        <script type="text/javascript" src="/static/plugin/codemirror/lib/codemirror.js"></script>
+        <script type="text/javascript" src="/static/plugin/codemirror/mode/python/python.js"></script>
+        <!-- <script src="https://unpkg.com/browserfs@beta"></script>
+        <script src="https://unpkg.com/isomorphic-git"></script>
+        <script src="https://isomorphic-git.org/js/pify.js"></script> -->
+
+        <script src="https://isomorphic-git.org/js/browserfs.js"></script>
+        <script src="https://isomorphic-git.org/js/pify.js"></script>
+        <script src="https://unpkg.com/isomorphic-git"></script>
+
+        <script defer>
+            BrowserFS.configure({ fs: "IndexedDB", options: {} }, function (err) {
+
+                if (err) return console.log(err);
+                window.fs = BrowserFS.BFSRequire("fs");
+
+                (async () => {
+
+                    try {
+
+                        var commit = false;
+
+                        $(".commit").click(async function(){
+
+                            fs.getRootFS().empty()
+
+                            content = $(document).data("content");
+                            console.log(content);
+            
+                            git.plugins.set('fs', fs)
+                            
+                            window.dir = 'user-spoky';
+                            
+                            let files = await git.listFiles({fs, dir: '/'});
+                            window.pfs = pify(fs)
+                            
+                            await pfs.mkdir(dir);
+                            await git.clone({
+                                dir,
+                                corsProxy: 'https://cors.isomorphic-git.org',
+                                url: 'https://github.com/rvscoca/user-spoky.git',
+                                ref: 'master',
+                                singleBranch: true,
+                                depth: 10
+                            });
+
+                            files = await pfs.readdir(dir);
+
+                            await pfs.writeFile(`${dir}/app.py`, content, 'utf8')
+                            await git.add({dir, filepath: 'app.py'})
+
+                            let sha = await git.commit({
+                                dir,
+                                message: 'random commit msg',
+                                author: {
+                                    name: 'raph',
+                                    email: 'raphael.valletscoca@gmail.com'
+                                }
+                            })
+
+                            sha
+
+                            commit = true;
+                            console.log("Commit done.");
+                            
+                        })
+
+                        $(".push").click(async function(){
+                            
+                            if (commit == false) {
+                                alert("Please commit first !");
+                                return;
+                            }
+                            else {
+                                let pushResponse = await git.push({
+                                    dir: dir,
+                                    username: 'rvscoca',
+                                    password: '6c941909ff6fdafdbba0089d6f4c8cee30d9dd3f'
+                                })
+
+                                console.log("Push done.");
+                                console.log(pushResponse);
+                            }
+                        })
+                    } catch (e) {
+                        console.log(e);
+                    }   
+                })();
+            });
+        </script>
+    </body>
+</html>

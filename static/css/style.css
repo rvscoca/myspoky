@@ -1,0 +1,10 @@
+textarea {
+    width: 50%;
+}
+
+.api-response {
+    border: 1px solid #282a36;
+    height: 130px;
+    padding : 5px;
+}
+
