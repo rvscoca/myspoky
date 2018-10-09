@@ -69,16 +69,19 @@ api.add_namespace(spoky)</textarea>
 
                         $(".commit").click(async function(){
 
+                            // pour clean le fs >>
                             fs.getRootFS().empty()
 
+                            // recup le contenu de l'editeur >>
                             content = $(document).data("content");
-                            console.log(content);
             
                             git.plugins.set('fs', fs)
                             
                             window.dir = 'user-spoky';
                             
                             let files = await git.listFiles({fs, dir: '/'});
+
+                            //fs to promise >>
                             window.pfs = pify(fs)
                             
                             await pfs.mkdir(dir);
@@ -108,6 +111,7 @@ api.add_namespace(spoky)</textarea>
                             sha
 
                             commit = true;
+                            alert("Commit done.");
                             console.log("Commit done.");
                             
                         })
@@ -122,11 +126,13 @@ api.add_namespace(spoky)</textarea>
                                 let pushResponse = await git.push({
                                     dir: dir,
                                     username: 'rvscoca',
-                                    password: '6c941909ff6fdafdbba0089d6f4c8cee30d9dd3f'
+                                    token: 'cd64b0ba1c9636d65441d1fba3912af13ad2e5f4'
                                 })
 
+                                alert("Push done");
                                 console.log("Push done.");
-                                console.log(pushResponse);
+                                //Check push obj >>
+                                //console.log(pushResponse);
                             }
                         })
                     } catch (e) {
