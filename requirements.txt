@@ -41,7 +41,7 @@ lxml==4.2.4
 MarkupSafe==1.0
 mccabe==0.6.1
 mechanize==0.3.6
-paramiko==2.4.2
+paramiko==2.10.1
 Pillow==5.2.0
 post==1.0.2
 public==1.0.3
